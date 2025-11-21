@@ -1,0 +1,7 @@
+{
+  "description": "Music artist web app",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "name": "Chuma"
+}
