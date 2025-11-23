@@ -6,6 +6,7 @@ import {
   Float, 
   MeshDistortMaterial, 
   Text,
+  Text3D,
   Center,
   Sparkles,
   Environment,
@@ -53,10 +54,19 @@ import * as THREE from 'three';
 // --- CONSTANTS & DATA ---
 
 const INITIAL_TRACKS = [
-  { id: 1, title: "LAGOS DUST", duration: "3:45", plays: "1.2M", type: "Single" },
-  { id: 2, title: "GOLDEN SOUL", duration: "4:12", plays: "890K", type: "EP" },
-  { id: 3, title: "ANCESTOR FLOW", duration: "3:30", plays: "2.5M", type: "Album" },
-  { id: 4, title: "NEON JUNGLE", duration: "3:55", plays: "1.5M", type: "Single" },
+  { id: 1, title: "SHE BE", duration: "2:45", plays: "10.4M", type: "Single", year: "2023", link: "https://open.spotify.com/track/1hPrUdO775t6JkI56Cr8Us" },
+  { id: 2, title: "SHE BE (Sped Up)", duration: "2:15", plays: "2.5M", type: "Single", year: "2023", link: "https://open.spotify.com/track/2w82JyPaIey14wPUg2E9Fe?si=778698893b9c4867" },
+  { id: 3, title: "STEADILY", duration: "3:10", plays: "2.3M", type: "Single", year: "2025", link: "https://open.spotify.com/track/5yayaJ2gEUEoKHMJmwGdUw?si=8b7a637f05f9407e" },
+  { id: 4, title: "GROW & HUSTLE", duration: "3:05", plays: "266K", type: "Single", year: "2023", link: "https://open.spotify.com/track/7tIrkhISEZSDSOLM9OmbP2?si=58942ace501b446d" },
+  { id: 5, title: "What Else", duration: "3:02", plays: "232K", type: "Single", year: "2023", link: "https://open.spotify.com/track/6iCZyikX0wiDqGIADWXXIL?si=8a9c958247094dd1" },
+  { id: 6, title: "Like It", duration: "2:50", plays: "209K", type: "Single", year: "2023", link: "https://open.spotify.com/track/6nRR968dHGVbHkGEGW5qjh?si=92b118aa39b540ff" },
+  { id: 7, title: "Jealousy", duration: "3:15", plays: "147K", type: "Single", year: "2023", link: "https://open.spotify.com/track/6nRR968dHGVbHkGEGW5qjh?si=92b118aa39b540ff" },
+  { id: 8, title: "Belong", duration: "2:55", plays: "71K", type: "Single", year: "2025", link: "https://open.spotify.com/track/5DxKXoAw39p7z8vIhgHzcA?si=2d3ce919acbf4120" },
+  { id: 9, title: "SHE BE (Slowed)", duration: "3:20", plays: "33K", type: "Single", year: "2023", link: "https://open.spotify.com/track/67XBVOvOqCo1ATTZwZhgQg?si=2649d24aafcd4876" },
+  { id: 10, title: "Confess", duration: "3:12", plays: "22K", type: "Single", year: "2023", link: "https://open.spotify.com/track/0lNw49uPbyACig39V9GDKZ?si=c4df56ff6adf491a" },
+  { id: 11, title: "Hour Glass", duration: "2:58", plays: "20K", type: "Single", year: "2023", link: "https://open.spotify.com/track/2TRIg9sBurbFiMdjaqSxRy?si=bef2f6f7c5ec4c51" },
+  { id: 12, title: "RHODA", duration: "3:30", plays: "10K", type: "Single", year: "2025", link: "https://open.spotify.com/track/3s6QoBib2YKMvRzHdPp7VA?si=883ca5caad1f422d" },
+  { id: 13, title: "KALI (Radio Edit Mix)", duration: "2:45", plays: "8.4K", type: "Single", year: "2025", link: "https://open.spotify.com/track/2bW51OJbA3JDCriRKIxO4c?si=036b3e90cfa342b4" },
 ];
 
 const INITIAL_TOUR_DATES = [
@@ -177,7 +187,7 @@ const LiveTicker = ({ isAdmin }: { isAdmin: boolean }) => {
     const salesMsgs = [
         "Someone from Lagos just bought a HOODIE",
         "New ticket sold: LONDON O2",
-        "User129 just streamed LAGOS DUST",
+        "User129 just streamed SHE BE",
         "New listener from TOKYO",
         "Someone from Accra just joined the TRIBE",
         "User88 just bought VINYL: GOLD EDITION"
@@ -408,7 +418,7 @@ const AbstractAvatar = ({ activeSection, arMode, vibe, partyMode, matrixMode, th
   }, [activeSection, vibe, partyMode, matrixMode, themeColor]);
 
   return (
-    <group ref={groupRef} position={[0, -0.5, 0]}>
+    <group ref={groupRef} position={[0, 1.2, 0]}>
       <Float speed={vibe === 'fire' ? 6 : 3} rotationIntensity={0.5} floatIntensity={1}>
         <mesh ref={meshRef}>
           <octahedronGeometry args={[1, 0]} />
@@ -672,52 +682,47 @@ const PrismaticShards = () => {
 }
 
 const Hero3DText = ({ vibe, matrixMode, themeColor }) => {
-  const textRef = useRef<any>(null);
+  const groupRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
-    if (textRef.current) {
+    if (groupRef.current) {
       const t = state.clock.getElapsedTime();
-      textRef.current.rotation.y = Math.sin(t * 0.3) * 0.15;
-      textRef.current.rotation.x = Math.cos(t * 0.5) * 0.05;
+      // Gentle floating
+      groupRef.current.rotation.y = Math.sin(t * 0.5) * 0.15;
+      groupRef.current.rotation.x = Math.cos(t * 0.3) * 0.05;
     }
   });
 
   return (
-    // Repositioned to be lower and closer to where the buttons are typically rendered in the HTML overlay
-    <Float speed={3} rotationIntensity={0.2} floatIntensity={0.5} position={[0, 0.8, -1]}>
-      <group ref={textRef}>
-         {/* Back Layer (Shadow/Depth) */}
-        <Text
-          fontSize={5.2}
-          font="https://fonts.gstatic.com/s/oswald/v49/TK3iWkUHHAIjg75cFRf3bXL8LICs1_FvsUZiZQ.ttf"
-          anchorX="center"
-          anchorY="middle"
-          position={[0.05, -0.05, -0.1]}
-          color="black"
-          fillOpacity={0.6}
-        >
-          CHUMA
-        </Text>
-        {/* Main Layer */}
-        <Text
-          fontSize={5}
-          font="https://fonts.gstatic.com/s/oswald/v49/TK3iWkUHHAIjg75cFRf3bXL8LICs1_FvsUZiZQ.ttf"
-          anchorX="center"
-          anchorY="middle"
-          letterSpacing={0.05}
-        >
-          CHUMA
-          <meshStandardMaterial 
-            color={matrixMode ? "#00ff00" : themeColor} 
-            emissive={matrixMode ? "#00ff00" : themeColor}
-            emissiveIntensity={0.6}
-            metalness={1}
-            roughness={0.2}
-            envMapIntensity={2}
-          />
-        </Text>
-      </group>
-    </Float>
+    <group position={[0, -0.5, 0]}>
+      <Center>
+        <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+          <group ref={groupRef}>
+             <Text3D
+                font="https://threejs.org/examples/fonts/helvetiker_bold.typeface.json"
+                size={0.8}
+                height={0.1}
+                curveSegments={12}
+                bevelEnabled
+                bevelThickness={0.02}
+                bevelSize={0.02}
+                bevelOffset={0}
+                bevelSegments={5}
+             >
+                CHUMA
+                <meshStandardMaterial 
+                   color={matrixMode ? "#00ff00" : themeColor}
+                   emissive={matrixMode ? "#00ff00" : themeColor}
+                   emissiveIntensity={0.4}
+                   metalness={0.9}
+                   roughness={0.1}
+                   envMapIntensity={1}
+                />
+             </Text3D>
+          </group>
+        </Float>
+      </Center>
+    </group>
   );
 };
 
@@ -1472,9 +1477,8 @@ const HeroContent = ({ onExplore, tracks, wallImages, isAdmin, onWallImageAdd, o
   return (
     <>
       <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} />
-      <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center z-10">
-        {/* Increased top margin to push buttons down, allowing 3D text to sit comfortably above */}
-        <div className="mt-[25vh] text-center">
+      <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-end pb-[15vh] z-10">
+        <div className="text-center">
           <div className="pointer-events-auto flex flex-col items-center gap-4 mt-12">
             <div className="flex gap-4">
               <button 
@@ -1525,7 +1529,7 @@ const MusicSection = ({ tracks, toggleFavorite, favorites, isPlayingId, setIsPla
         <h3 className="text-3xl font-brand text-[var(--theme-color)] mb-6">LATEST RELEASES</h3>
         <div className="space-y-4">
           {tracks.map((track, idx) => (
-            <div key={idx} className="group flex items-center justify-between p-3 hover:bg-white/5 rounded-lg transition-colors cursor-pointer border-b border-white/5">
+            <div key={idx} className="group flex items-center justify-between p-3 hover:bg-white/5 rounded-lg transition-colors cursor-pointer border-b border-white/5" onClick={() => window.open(track.link, '_blank')}>
               <div className="flex items-center gap-4">
                 <span className="text-gray-500 font-mono text-sm">{idx + 1}</span>
                 <div>
@@ -1549,7 +1553,7 @@ const MusicSection = ({ tracks, toggleFavorite, favorites, isPlayingId, setIsPla
                 </button>
                 <span className="text-xs text-gray-500">{track.duration}</span>
                 <button 
-                  onClick={() => setIsPlayingId(isPlayingId === track.id ? null : track.id)}
+                  onClick={(e) => { e.stopPropagation(); setIsPlayingId(isPlayingId === track.id ? null : track.id); }}
                   className="w-8 h-8 rounded-full bg-[var(--theme-color)] text-black flex items-center justify-center hover:scale-110 transition-transform relative"
                 >
                   {isPlayingId === track.id ? <Pause size={14} fill="black" /> : <Play size={14} fill="black" />}
@@ -2201,7 +2205,6 @@ function App() {
         <header className="fixed top-0 left-0 w-full p-6 z-50 flex justify-between items-start pointer-events-none">
           <div>
             <h1 className="text-2xl font-bold font-brand tracking-tighter pointer-events-auto cursor-pointer" onClick={() => setActiveSection('hero')}>CHUMA</h1>
-            {/* Removed the AFRO-FUTURE paragraph text here as requested */}
           </div>
 
           <div className="flex gap-4 pointer-events-auto items-center">
