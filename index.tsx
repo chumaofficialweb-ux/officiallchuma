@@ -76,17 +76,22 @@ const INITIAL_TOUR_DATES = [
   { id: 4, city: "Accra", venue: "Black Star Square", date: "DEC 18", country: "GH" },
 ];
 
+// Helper to convert Google Drive view links to direct image sources using lh3.googleusercontent.com
+const driveImg = (id: string) => `https://lh3.googleusercontent.com/d/${id}`;
+
 const INITIAL_MERCH = [
-  { id: 1, name: "CHUMA HOODIE v1", price: 65, type: "Apparel", category: "merch", img: "https://images.unsplash.com/photo-1556906781-9a412961d289?auto=format&fit=crop&w=500&q=60" },
-  { id: 2, name: "VINYL: GOLD EDITION", price: 45, type: "Physical", category: "merch", img: "https://images.unsplash.com/photo-1603048588665-791ca8aea616?auto=format&fit=crop&w=500&q=60" },
-  { id: 3, name: "AFRO-FUSION DRUM KIT", price: 29, type: "Sample Pack", category: "sounds", img: "https://images.unsplash.com/photo-1519874179391-3ebc752241dd?auto=format&fit=crop&w=500&q=60" },
-  { id: 4, name: "LAGOS VIBES BEAT", price: 150, type: "Exclusive Rights", category: "beats", img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=500&q=60" },
+  { id: 1, name: "CHUMA HOODIE v1", price: 65, type: "Apparel", category: "merch", img: driveImg("10tCnCgrORd2jp6-4BX-ql0PQT6tWvXXz") },
+  { id: 2, name: "VINYL: GOLD EDITION", price: 45, type: "Physical", category: "merch", img: driveImg("1y08Hp2qZk3NOrrfl83n5FUoVjaW49EaM") },
+  { id: 3, name: "AFRO-FUSION DRUM KIT", price: 29, type: "Sample Pack", category: "sounds", img: driveImg("1TcrZNb5z8ErvwlCxREHqxHYG6vQ-1dmf") },
+  { id: 4, name: "LAGOS VIBES BEAT", price: 150, type: "Exclusive Rights", category: "beats", img: driveImg("1SnMYLsqS-qFtxx2RkAwoWYWbkqlkWIwK") },
 ];
 
 const INITIAL_WALL_IMAGES = [
-  { id: 1, src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=60", caption: "AFRO PUNK" },
-  { id: 2, src: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?auto=format&fit=crop&w=500&q=60", caption: "SPIRIT" },
-  { id: 3, src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=60", caption: "VISION" },
+  { id: 1, src: driveImg("1yuxpnQYn1HfEQn2q7FuCOgfWbPbMnwS8"), caption: "THE LOOK" },
+  { id: 2, src: driveImg("1EMHzHVovMyq9H3YJU3n0UCAJnUaKSEp7"), caption: "VIBES" },
+  { id: 3, src: driveImg("1JbtqSbBEiFewAZIFf0nDHoWVyp4J7_hX"), caption: "VISION" },
+  { id: 4, src: driveImg("1UKAcMbw6_s5G17YysvldO-ZeweAKGwjK"), caption: "STAGE" },
+  { id: 5, src: driveImg("11L6-DW6FC1mW6t9XWy3eYUfRioup6ozI"), caption: "ART" }
 ];
 
 // --- UTILITY COMPONENTS ---
@@ -1296,7 +1301,7 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, cl
                     key={item.id} 
                     className="flex gap-4 bg-white/5 p-3 rounded-lg border border-white/5"
                   >
-                    <img src={item.img} className="w-20 h-20 object-cover rounded bg-gray-800" />
+                    <img src={item.img} className="w-20 h-20 object-cover rounded bg-gray-800" referrerPolicy="no-referrer" />
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <h4 className="font-bold text-sm leading-tight mb-1">{item.name}</h4>
@@ -1396,6 +1401,7 @@ const WallOfFame = ({ images, isAdmin, onAdd, onRemove }) => {
               src={img.src} 
               className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0" 
               alt={img.caption}
+              referrerPolicy="no-referrer"
             />
             
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
@@ -1471,37 +1477,40 @@ const Navigation = ({ active, setActive, user, onHover }) => {
   );
 };
 
-const HeroContent = ({ onExplore, tracks, wallImages, isAdmin, onWallImageAdd, onWallImageRemove }) => {
+const HeroContent = ({ onExplore, onGoToStore, tracks, wallImages, isAdmin, onWallImageAdd, onWallImageRemove }) => {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
     <>
       <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} />
-      <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-end pb-[15vh] z-10">
-        <div className="text-center">
-          <div className="pointer-events-auto flex flex-col items-center gap-4 mt-12">
-            <div className="flex gap-4">
-              <button 
+      <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-end pb-[15vh] z-10 px-6 md:px-12">
+        
+        {/* CENTER CONTENT: Stream Button + Text */}
+        <div className="absolute bottom-[25vh] left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20 pointer-events-auto">
+            <button 
                 onClick={onExplore}
                 className="px-8 py-3 bg-[var(--theme-color)] text-black font-bold font-brand tracking-widest hover:bg-white transition-colors clip-path-slant"
                 style={{ clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0% 100%)' }}
               >
                 STREAM NOW
-              </button>
+            </button>
+            <h2 className="text-xs md:text-sm font-light tracking-[0.8em] text-[var(--theme-color)] animate-pulse pointer-events-none whitespace-nowrap">
+                THE SOUND OF THE FUTURE
+            </h2>
+        </div>
+
+        {/* BOTTOM ROW */}
+        <div className="w-full flex justify-end items-end">
+           {/* OFFERS BUTTON */}
+           <div className="pointer-events-auto">
               <button 
-                onClick={() => setShowVideo(true)}
+                onClick={onGoToStore}
                 className="px-8 py-3 border border-[var(--theme-color)] text-[var(--theme-color)] font-bold font-brand tracking-widest hover:bg-[var(--theme-color)]/10 transition-colors clip-path-slant"
                 style={{ clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0% 100%)' }}
               >
-                WATCH VIDEO
+                OFFERS
               </button>
-            </div>
-            <div className="mt-8">
-                <h2 className="text-xs md:text-sm font-light tracking-[0.8em] text-[var(--theme-color)] animate-pulse">
-                    THE SOUND OF THE FUTURE
-                </h2>
-            </div>
-          </div>
+           </div>
         </div>
       </div>
       <MinimalCatalogue tracks={tracks} />
@@ -1652,7 +1661,7 @@ const MerchSection = ({ merch, addToCart, toggleFavorite, favorites }) => {
                   className="bg-black/50 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group hover:border-[var(--theme-color)]/50 transition-all"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    <img src={item.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <img src={item.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
                     <div className="absolute top-2 right-2">
                        <button 
                           onClick={() => toggleFavorite('merch', item.id)}
@@ -1716,7 +1725,7 @@ const FavoritesSection = ({ tracks, merch, favorites, addToCart }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {favMerch.map(m => (
                 <div key={m.id} className="bg-white/5 rounded p-3 border border-white/5">
-                   <img src={m.img} className="w-full h-32 object-cover rounded mb-2" />
+                   <img src={m.img} className="w-full h-32 object-cover rounded mb-2" referrerPolicy="no-referrer" />
                    <h4 className="font-bold text-sm mb-1">{m.name}</h4>
                    <div className="flex justify-between items-center">
                      <span className="text-[var(--theme-color)] text-xs">${m.price}</span>
@@ -1830,7 +1839,7 @@ const AdminSection = ({ user, onLogout, tracks, onAddTrack, onRemoveTrack, merch
 
   // Form State
   const [trackForm, setTrackForm] = useState({ title: "", duration: "", type: "Single" });
-  const [merchForm, setMerchForm] = useState({ name: "", price: "", type: "Apparel", category: "merch", img: "https://images.unsplash.com/photo-1556906781-9a412961d289?auto=format&fit=crop&w=500&q=60" });
+  const [merchForm, setMerchForm] = useState({ name: "", price: "", type: "Apparel", category: "merch", img: "https://lh3.googleusercontent.com/d/1UKAcMbw6_s5G17YysvldO-ZeweAKGwjK" });
 
   const handleTrackSubmit = (e) => {
       e.preventDefault();
@@ -1842,7 +1851,7 @@ const AdminSection = ({ user, onLogout, tracks, onAddTrack, onRemoveTrack, merch
   const handleMerchSubmit = (e) => {
       e.preventDefault();
       onAddMerch(merchForm);
-      setMerchForm({ ...merchForm, name: "", price: "", img: "https://images.unsplash.com/photo-1556906781-9a412961d289?auto=format&fit=crop&w=500&q=60" });
+      setMerchForm({ ...merchForm, name: "", price: "", img: "https://lh3.googleusercontent.com/d/1UKAcMbw6_s5G17YysvldO-ZeweAKGwjK" });
       showToast("PRODUCT ADDED");
   };
 
@@ -2051,7 +2060,7 @@ const AdminSection = ({ user, onLogout, tracks, onAddTrack, onRemoveTrack, merch
                      {merch.map((item) => (
                          <div key={item.id} className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/5 hover:border-white/20">
                              <div className="flex items-center gap-3">
-                                 <img src={item.img} className="w-10 h-10 rounded bg-gray-800 object-cover" />
+                                 <img src={item.img} className="w-10 h-10 rounded bg-gray-800 object-cover" referrerPolicy="no-referrer" />
                                  <div>
                                     <p className="font-bold text-sm text-white">{item.name}</p>
                                     <p className="text-xs text-gray-500 capitalize">{item.category} • ${item.price}</p>
@@ -2086,6 +2095,7 @@ function App() {
   const [wallImages, setWallImages] = useState(INITIAL_WALL_IMAGES);
   const [isPlayingId, setIsPlayingId] = useState(null);
   const [hoveredNav, setHoveredNav] = useState(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Content State (Lifted for Admin CMS)
   const [tracks, setTracks] = useState(INITIAL_TRACKS);
@@ -2122,6 +2132,24 @@ function App() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  // Audio Playback Effect
+  useEffect(() => {
+    if (audioRef.current) {
+        if (isPlayingId) {
+            audioRef.current.volume = 1.0;
+            // Using a promise handling to catch autoplay errors
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Audio playback failed:", error);
+                });
+            }
+        } else {
+            audioRef.current.pause();
+        }
+    }
+  }, [isPlayingId]);
 
   const handleLogin = (userData) => {
       setUser(userData);
@@ -2176,6 +2204,14 @@ function App() {
       <AnimatePresence>
         {loading && <Preloader onComplete={() => setLoading(false)} />}
       </AnimatePresence>
+      
+      {/* Hidden Audio Player for Demo - Using a reliable direct MP3 link */}
+      <audio 
+        ref={audioRef} 
+        src="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3" 
+        loop 
+        crossOrigin="anonymous"
+      />
 
       <div 
         className="w-full h-screen bg-black text-white overflow-hidden select-none"
@@ -2320,7 +2356,8 @@ function App() {
                className="absolute inset-0 z-10"
             >
               <HeroContent 
-                 onExplore={() => setActiveSection('music')} 
+                 onExplore={() => setActiveSection('music')}
+                 onGoToStore={() => setActiveSection('merch')}
                  tracks={tracks}
                  wallImages={wallImages}
                  isAdmin={user?.role === 'admin'}
